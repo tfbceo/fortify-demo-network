@@ -148,7 +148,7 @@ rendered by `fortify-offices` widgets, so they need no per-page editing and surv
    Publish to Sitelets.
 3. **Phase 6:** create the 12 office sites; confirm the new-site sync delivered pages/templates/kit; set
    each front page; create one `Sample Editor` local-editor login per office.
-4. Capture the **golden master** snapshot (ENVIRONMENTS.md) once it passes `TESTING.md`.
+4. Capture the **golden master** snapshot (ENVIRONMENTS.md) once it passes the plugin repo's `docs/TESTING.md`.
 5. Keep **Kissimmee** (§3) un-created as the live "add an office" demo step.
 
 ## 8. Dependencies that gate this plan (from BUILD-SPEC §11 — resolve in phase 1)

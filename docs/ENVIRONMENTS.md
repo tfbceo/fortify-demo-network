@@ -10,15 +10,15 @@ sitelets** (one sitelet **per office**, *not* per listing). All three environmen
 
 | # | Environment | Purpose | Basis |
 |---|---|---|---|
-| 1 | **Local test** | Plugin development + validation of **Phase 3, Phase 4, merge-on-publish** | **LocalWP** multisite, rebuilt from the **Fortify repo** |
+| 1 | **Local test** | Plugin development + validation of **Phase 3, Phase 4, merge-on-publish** | **LocalWP** multisite, rebuilt with **this repo's README**, content from the **Fortify site repo** |
 | 2 | **Local demo** | Clean network for **screen-share** demos (no dev mess) | A **clone of #1's** network, kept clean |
 | 3 | **Online demo** | **Guided demos now; prospect logins after Phase 4 + merge Tier 1** | Password-protected, Sitelets-branded domain, **isolated hosting** |
 
 ## 1. Local test (LocalWP)
-- A LocalWP WordPress **Multisite** rebuilt from the **Fortify repo** — so it's reproducible and a clean
+- A LocalWP WordPress **Multisite** rebuilt by following this repo's **README** (content from the Fortify site repo, `tfbceo/Fortify-Listings-FE-Website`) — so it's reproducible and a clean
   reset is just a rebuild. This is where plugin code is developed and where Phase 3 / Phase 4 /
   merge-on-publish are validated before anything else sees them.
-- Install target: `sitelets-for-multisite.1.1.0.zip` (current build), then the phase builds as they land.
+- Install target: `sitelets-for-multisite.1.1.3.zip` (current release), then the phase builds as they land.
 
 ### LocalWP web server: Apache, with a hand-added `.htaccess`
 - The LocalWP site (`fortify-demo.local`, subdirectory multisite) runs **Apache**, not nginx. URL rewriting
@@ -31,7 +31,7 @@ sitelets** (one sitelet **per office**, *not* per listing). All three environmen
   still works, which is the giveaway that only rewriting is broken.
 - **First check after any clone or migration:** `http://<site>.local/wp-json/` returns **200 JSON**
   (`Content-Type: application/json`). If not, check for `.htaccess` first.
-- The rules (standard WordPress subdirectory multisite), as added to `app/public/.htaccess`:
+- The rules (standard WordPress subdirectory multisite), as added to `app/public/.htaccess`. A copy to drop in is `config/htaccess-multisite-subdirectory` in this repo:
 
 ```apache
 # BEGIN WordPress Multisite
@@ -73,8 +73,8 @@ RewriteRule . index.php [L]
 
 ## Snapshot-and-reset procedure (demo environments)
 Environment-level restore to a known-good **golden** state — distinct from the plugin's **per-publish,
-per-site** snapshot in `MERGE-ON-PUBLISH-SPEC.md` (use both). Applies to envs **2 and 3**; env 1 resets by
-rebuilding from the Fortify repo.
+per-site** snapshot in the plugin repo's `docs/MERGE-ON-PUBLISH-SPEC.md` (use both). Applies to envs **2 and 3**; env 1 resets by
+rebuilding from this repo's README.
 
 **One-time: capture the golden master**
 - [ ] Stand up the seeded 12-office network (per the forthcoming build spec: offices, pages,

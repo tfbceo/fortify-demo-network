@@ -2,7 +2,7 @@
 
 Version 2.1, 18 November 2026 (revised after cross-check against the repo docs). Replaces the earlier Google Doc draft (six offices, template-subsite architecture), which is obsolete.
 
-Suggested repo location: `docs/BUILD-SPEC.md`. Read alongside `ENVIRONMENTS.md`, `CODE-REVIEW-2026-11.md`, `MERGE-ON-PUBLISH-SPEC.md` and `TESTING.md`.
+Lives in the `fortify-demo-network` repo (moved from the plugin repo on 2026-11-21). Read alongside `ENVIRONMENTS.md` (this repo) and, in the plugin repo (`tfbceo/WP-Sitelets-Plugin-Elementor`), `docs/CODE-REVIEW-2026-11.md`, `docs/MERGE-ON-PUBLISH-SPEC.md` and `docs/TESTING.md`. "The Fortify repo" below means the static marketing site, `tfbceo/Fortify-Listings-FE-Website`.
 
 ## 1. Purpose
 
@@ -17,7 +17,7 @@ Fortify is the demo brand and content source. The live fortifylistings.com stays
 
 | Input | How it was checked |
 |---|---|
-| Fortify page structure | Live homepage read on 18 Nov 2026. The repo has not been read; Phase 0 below covers that. |
+| Fortify page structure | Live homepage read on 18 Nov 2026. Repo (`tfbceo/Fortify-Listings-FE-Website`, static HTML on Vercel, last commit 2026-07-28) inventoried in phase 0 on 21 Nov 2026. |
 | Plugin behavior | 1.1.0 source read twice (two independent reviews). Not executed. |
 | MLS footprints | Current coverage sources for Stellar and Miami; IDX vendor pages for NABOR (lower confidence). |
 | Phoenix and Nashville MLS names | Assumed. Not confirmed against Fortify's memberships. |
@@ -31,7 +31,8 @@ Fortify is the demo brand and content source. The live fortifylistings.com stays
 - Theme: Hello Elementor with a `fortify-child` child theme.
 - Sitelets license: the 25-site tier (Professional, product 2821). The free tier caps at 3 sites and sitelet features do not load on unlicensed subsites. This is the sitelet count inside one network. It is separate from the license's activation limit, which counts install URLs (see open items).
 - Keep widget add-on packs out. The 1.1.0 widget wrapper fails above 200 widget types. Count the registered widget types (Elementor, Elementor Pro, WordPress widgets, `fortify-offices` widgets) in phase 1 and confirm the total is under 200. Measured 2026-11-21: 152 (Elementor Pro 84, Elementor 50, WordPress widgets 18), leaving 48 for `fortify-offices` widgets. Re-count after phase 4.
-- Whole network set to discourage indexing in every environment.
+- Whole network set to discourage indexing in every environment. Done 2026-11-21 by the must-use plugin `fortify-noindex.php`: it forces `blog_public` to 0 on every site (core prints `noindex, nofollow` and turns off its XML sitemaps), creates new sites as non-public, and sends an `X-Robots-Tag: noindex, nofollow` header. `robots.txt` still allows crawling; core has done that since 5.3 so crawlers can see the noindex. Remove the must-use plugin only for a real production launch.
+- No analytics: Google Tag Manager, Microsoft Clarity and the Meta Pixel from the static site are left out entirely (decision 2026-11-21).
 
 ## 4. Offices
 
@@ -49,8 +50,8 @@ Office name and URL slug use the consumer market name. The MLS is a registry fie
 | 8 | Boca Raton-Delray Beach | boca-raton | FL | Miami MLS | South Palm Beach County | Split by ZIP with office 9 |
 | 9 | West Palm Beach-Jupiter | west-palm-beach | FL | Miami MLS | North Palm Beach County | Split by ZIP with office 8 |
 | 10 | Naples | naples | FL | Southwest Florida MLS (NABOR) | Collier | County on live coverage list; MLS boundary lower confidence |
-| 11 | Phoenix | phoenix | AZ | ARMLS (assumed) | Maricopa | Assumption; confirm |
-| 12 | Nashville | nashville | TN | Realtracs (assumed) | Davidson, Williamson | Assumption; confirm |
+| 11 | Phoenix | phoenix | AZ | ARMLS (assumed) | Maricopa | Registry status "coming soon" (decision 2026-11-21); MLS assumption to confirm |
+| 12 | Nashville | nashville | TN | Realtracs (assumed) | Davidson, Williamson | Registry status "coming soon" (decision 2026-11-21); MLS assumption to confirm |
 
 Routing must work at ZIP level, because offices 8 and 9 share one county.
 
@@ -97,7 +98,7 @@ Because these widgets read the registry at render time, the same published page 
 
 | Page | Slug | Notes |
 |---|---|---|
-| Home | (front page) | Rebuilt section by section. Hero address form routes a ZIP to its office. Static county list replaced by the markets grid. Licensing block reads the registry. |
+| Home | (front page) | Rebuilt section by section. Hero and final address forms are a plain ZIP/address field that routes a ZIP to its office: no Google Places, no API key (decision 2026-11-21). The static county list in the site footer becomes the registry-driven footer office directory. Licensing block reads the registry. |
 | Locations | locations | New. The location finder. |
 | How it works, Plans, FAQs, About, Contact | existing slugs | Rebuilt. Served on sitelets through the 404 fallback. |
 | Legal set | existing slugs | Rebuilt. Same fallback. |
@@ -157,14 +158,15 @@ Not to be shown before merge Tier 2: corporate changes to unlocked content reach
 ## 10. Build phases
 
 0. **Inventory, no changes.** Read the Fortify repo: pages, sections, fonts, colors, spacing, breakpoints, scripts (calculator, address form), images.
+   **Done 2026-11-21.** 11 pages, one font (Plus Jakarta Sans 400–800), 14 named colors plus about 20 unnamed ones, no spacing scale (about 200 distinct values), breakpoints 980/860/760/560/520, 1180px container. Scripts: analytics (dropped), Google Places address form (replaced by a plain field), savings calculator (3% vs a fixed $2,495), plans-table toggle and FAQ accordion. The sample listing agreement PDF is linked but missing from the repo.
 1. **Environment.** LocalWP site, Multisite in subdirectory mode, plugins, child theme, license activation, no-index. Then two critical-path checks with one throwaway subsite, before anything else is built: (a) how a Sitelet Page becomes a sitelet's front page, and (b) whether a Theme Builder header and footer render on a newly created sitelet. If either fails, stop and resolve it first. Also count widget types against the 200 limit.
-   **Gating checks passed 2026-11-21** on Sitelets 1.1.2 with the Reading-screen fix (released as 1.1.3), plus browser confirmation: (1) `wp site create` runs the new-site sync, which delivers Sitelet Pages, templates and the kit; (2) the Sitelet home page checkbox makes the marked Sitelet Page the sitelet's front page, and Settings → Reading on the sitelet shows and keeps it; (3) Theme Builder header and footer render on the new sitelet; (4) 152 of 200 widget types. On 1.1.1 checks 2 and 3 failed (double-serialized meta, missing theme, no front-page path); fixed in 1.1.2. Known issue #25 (`wp_N_e_notes`) noted above. Environment steps still to do: child theme, no-index.
+   **Gating checks passed 2026-11-21** on Sitelets 1.1.2 with the Reading-screen fix (released as 1.1.3), plus browser confirmation: (1) `wp site create` runs the new-site sync, which delivers Sitelet Pages, templates and the kit; (2) the Sitelet home page checkbox makes the marked Sitelet Page the sitelet's front page, and Settings → Reading on the sitelet shows and keeps it; (3) Theme Builder header and footer render on the new sitelet; (4) 152 of 200 widget types. On 1.1.1 checks 2 and 3 failed (double-serialized meta, missing theme, no front-page path); fixed in 1.1.2. Known issue #25 (`wp_N_e_notes`) noted above. **Phase 1 complete 2026-11-21:** `fortify-child` (child of Hello Elementor 3.5.2) is network-enabled and active on site 1, and a throwaway sitelet created afterwards got it from the main site; the network is no-index (section 3), verified on site 1 and on the throwaway sitelet. The child theme and the must-use plugin live in the LocalWP install only.
 2. **Design system.** Elementor global colors, fonts and spacing from the Fortify CSS.
 3. **Corporate rebuild.** Home, then inner pages, as native containers and widgets.
 4. **Registry.** `fortify-offices` plugin, widgets, finder; seed the twelve records.
 5. **Office templates.** Finalize the Theme Builder header and footer and the global kit. Build the six Sitelet Pages on site 1; tick "Sitelet home page" on the office Home page; apply the lock map; publish. Nothing in this phase can be changed cheaply once offices exist.
 6. **Offices.** Create the twelve sites; confirm the new-site sync delivered pages, templates and kit, and that each front page is the office Home (set by the plugin from the Sitelet home page checkbox); create one local editor per office. Expect issue #25 log noise.
-7. **Smoke test.** Run `TESTING.md`.
+7. **Smoke test.** Run `docs/TESTING.md` from the plugin repo.
 8. **Clone.** Copy the network to the local demo environment; later push the online demo.
 
 ## 11. Open items

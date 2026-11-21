@@ -1,0 +1,10 @@
+/*
+Theme Name:   Fortify Child
+Description:  Child theme of Hello Elementor for the Fortify Listings demo network. Holds Fortify-specific code (custom widgets such as the savings calculator) and any CSS that the Elementor kit cannot express.
+Template:     hello-elementor
+Version:      0.1.0
+Requires PHP: 8.1
+Text Domain:  fortify-child
+*/
+
+/* Kit-level design tokens (colors, type, spacing) live in the Elementor kit, not here. */
