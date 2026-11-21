@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Fortify Listings — Wordmark — reversed white, for dark backgrounds
+  Use: navigation bars, app headers, favicons at large size
+  Colors: #ffffff (brand indigo)
+  ViewBox crops to wordmark + battlement only, no tagline whitespace
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 263.2 70" role="img" aria-label="Fortify Listings">
+  <title>Fortify Listings</title>
+  <defs>
+    <style>
+      .fw { fill: #ffffff; }
+      .fb { fill: #ffffff; fill-rule: evenodd; }
+    </style>
+  </defs>
+  <path class="fw" d="M38.1,43.8h-21.9v24.3H2.6V5.9h39.6v12.6h-26v13h21.9v12.3Z"/>
+  <path class="fw" d="M44.5,47c0-13.3,9.8-22.2,23.2-22.2s23.1,8.9,23.1,22.2-9.8,22.1-23.1,22.1-23.2-8.8-23.2-22.1ZM57.6,47c0,6.4,4.1,10.6,10.2,10.6s10.1-4.2,10.1-10.6-4.1-10.5-10.1-10.5-10.2,4.2-10.2,10.5Z"/>
+  <path class="fw" d="M127.4,26.1v12.2h-4.1c-7.4,0-11.9,3.3-11.9,11.6v18.3h-13V26.2h12.2l.7,6.2c1.8-4.1,5.5-6.9,11.1-6.9s3.2.2,5,.6Z"/>
+  <path class="fw" d="M152.5,68.2h-13v-31.3h-8v-10.8h8v-13h13v13h8v10.8h-8v31.3Z"/>
+  <path class="fw" d="M172.8,19.5c-4.1,0-7.4-3.3-7.4-7.4s3.3-7.3,7.4-7.3,7.3,3.2,7.3,7.3-3.3,7.4-7.3,7.4ZM166.4,68.2V26.1h13v42.1h-13Z"/>
+  <path class="fw" d="M185.1,26.1h5.8v-3.4c0-12.5,6.6-18,17.3-18s3.8.2,5.8.5v11.1h-3.6c-5.3,0-6.5,2.8-6.5,6.4v3.4h10.1v10.8h-10.1v31.3h-13v-31.3h-5.8v-10.8Z"/>
+  <path class="fw" d="M216.4,68.4v-10.9h7.2c4.4,0,6.2-1.3,7.9-5.9l.8-2-16.9-43.5h13.9l9.2,27,10.2-27h13.5l-21.4,51.2c-3.5,8.6-8.2,12.2-15.7,12.2s-6.1-.4-8.6-1.2Z"/>
+  <path class="fb" d="M62.6,1.5h-13.3v11.1l6.8,8h64.5l6.8-8V1.5h-13.3v6.8h-17.5V1.5h-16.4v6.8h-17.5V1.5h-.2Z"/>
+</svg>

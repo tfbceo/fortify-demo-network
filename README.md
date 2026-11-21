@@ -17,9 +17,13 @@ docs/ENVIRONMENTS.md    local test, local demo, online demo; snapshot and reset
 themes/fortify-child/   child theme of Hello Elementor
 mu-plugins/             fortify-noindex.php: keeps the whole network out of search engines
 config/                 htaccess-multisite-subdirectory: rewrite rules for Apache
+scripts/apply-kit.php   phase 2: design system on the site 1 Elementor kit
+scripts/build-home.php  phase 3: corporate homepage + Theme Builder header and footer
 ```
 
-Coming as they are built: `plugins/fortify-offices/` (office registry, BUILD-SPEC section 6) and `scripts/` (seeding and the lock map).
+Scripts run with `wp eval-file` on site 1 and are re-runnable: each replaces what it made before.
+
+Coming as they are built: `plugins/fortify-offices/` (office registry, BUILD-SPEC section 6) and more `scripts/` (seeding and the lock map).
 
 ## Rebuild from a fresh LocalWP site
 
@@ -50,7 +54,13 @@ Tested against: WordPress 7.1.5, PHP 8.5, Elementor 4.4.1, Elementor Pro 4.4.0, 
    - `http://fortify-demo.local/wp-json/` returns 200 JSON.
    - The home page source has `<meta name='robots' content='noindex, nofollow' />` and the response has an `X-Robots-Tag: noindex, nofollow` header.
    - The page loads `fortify-child/style.css`.
-9. **Continue with the build phases** in `docs/BUILD-SPEC.md` section 10, from phase 2. Phase 1's gating checks have been passed on Sitelets 1.1.3 and do not need repeating on a rebuild.
+9. **Apply the design system and build the homepage** (from `app/public`, in Local's site shell):
+   ```
+   wp eval-file <repo>/scripts/apply-kit.php
+   wp eval-file <repo>/scripts/build-home.php
+   ```
+   The home page becomes the static front page, and the header and footer apply to the entire site.
+10. **Continue with the build phases** in `docs/BUILD-SPEC.md` section 10. Phase 1's gating checks have been passed on Sitelets 1.1.3 and do not need repeating on a rebuild.
 
 ## Working rules
 

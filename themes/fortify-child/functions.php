@@ -2,29 +2,61 @@
 /**
  * Fortify Child theme.
  *
- * Kept deliberately small: design tokens belong in the Elementor kit so they
- * sync to sitelets with the kit. Custom widgets (savings calculator) are
- * registered from here in phase 3.
+ * Design tokens (colors, type, spacing, breakpoints) live in the Elementor kit
+ * so they reach sitelets with the kit. This theme holds what the kit cannot:
+ * Fortify component styles (assets/css/fortify.css), small behaviors, and the
+ * Fortify widgets (savings calculator, address field).
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'FORTIFY_CHILD_VERSION', '0.1.0' );
+define( 'FORTIFY_CHILD_VERSION', '0.2.0' );
+
+/** Asset version: the theme version plus the file's modified time, so edits are never served stale. */
+function fortify_child_asset_version( $relative ) {
+	$file = get_stylesheet_directory() . '/' . $relative;
+	return FORTIFY_CHILD_VERSION . ( file_exists( $file ) ? '.' . filemtime( $file ) : '' );
+}
 
 /**
- * Child stylesheet, after the parent's. No dependency on the parent handles:
- * Hello Elementor enqueues those conditionally, and a missing dependency would
- * silently drop this stylesheet.
+ * Styles and scripts. No dependency on the parent handles: Hello Elementor
+ * enqueues those conditionally, and a missing dependency would silently drop
+ * these files.
  */
 add_action(
 	'wp_enqueue_scripts',
 	static function () {
-		wp_enqueue_style(
-			'fortify-child',
-			get_stylesheet_uri(),
-			array(),
-			FORTIFY_CHILD_VERSION
-		);
+		$uri = get_stylesheet_directory_uri();
+		wp_enqueue_style( 'fortify-child', get_stylesheet_uri(), array(), fortify_child_asset_version( 'style.css' ) );
+		wp_enqueue_style( 'fortify-components', $uri . '/assets/css/fortify.css', array(), fortify_child_asset_version( 'assets/css/fortify.css' ) );
+		wp_enqueue_script( 'fortify', $uri . '/assets/js/fortify.js', array(), fortify_child_asset_version( 'assets/js/fortify.js' ), array( 'in_footer' => true ) );
+		wp_register_script( 'fortify-savings-calculator', $uri . '/assets/js/savings-calculator.js', array(), fortify_child_asset_version( 'assets/js/savings-calculator.js' ), array( 'in_footer' => true ) );
 	},
 	20
+);
+
+// Load the component styles inside the Elementor editor preview too.
+add_action(
+	'elementor/preview/enqueue_styles',
+	static function () {
+		wp_enqueue_style( 'fortify-components', get_stylesheet_directory_uri() . '/assets/css/fortify.css', array(), fortify_child_asset_version( 'assets/css/fortify.css' ) );
+	}
+);
+
+// "Fortify" category in the Elementor widget panel.
+add_action(
+	'elementor/elements/categories_registered',
+	static function ( $elements_manager ) {
+		$elements_manager->add_category( 'fortify', array( 'title' => esc_html__( 'Fortify', 'fortify-child' ), 'icon' => 'fa fa-home' ) );
+	}
+);
+
+add_action(
+	'elementor/widgets/register',
+	static function ( $widgets_manager ) {
+		require_once __DIR__ . '/inc/widgets/class-savings-calculator.php';
+		require_once __DIR__ . '/inc/widgets/class-address-field.php';
+		$widgets_manager->register( new \FortifyChild\Widgets\Savings_Calculator() );
+		$widgets_manager->register( new \FortifyChild\Widgets\Address_Field() );
+	}
 );
