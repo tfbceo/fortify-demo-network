@@ -54,6 +54,7 @@ class Office_Info extends Widget_Base {
 				'broker'   => esc_html__( 'Broker of record', 'fortify-offices' ),
 				'license'  => esc_html__( 'State license number', 'fortify-offices' ),
 				'state'    => esc_html__( 'State name', 'fortify-offices' ),
+				'map'      => esc_html__( 'Map (office location)', 'fortify-offices' ),
 			),
 		) );
 		$this->add_control( 'before', array(
@@ -73,11 +74,23 @@ class Office_Info extends Widget_Base {
 			'default' => 'p',
 			'options' => array( 'p' => 'p', 'span' => 'span', 'div' => 'div', 'h1' => 'h1', 'h2' => 'h2', 'h3' => 'h3', 'h4' => 'h4' ),
 		) );
+		$this->add_control( 'map_height', array(
+			'label'     => esc_html__( 'Map height (px)', 'fortify-offices' ),
+			'type'      => Controls_Manager::NUMBER,
+			'default'   => 360,
+			'condition' => array( 'field' => 'map' ),
+		) );
 		$this->add_control( 'fallback', array(
 			'label'       => esc_html__( 'Text when there is no office', 'fortify-offices' ),
 			'type'        => Controls_Manager::TEXT,
 			'default'     => '',
 			'description' => esc_html__( 'Shown on the corporate site. Empty hides the widget.', 'fortify-offices' ),
+		) );
+		$this->add_control( 'fallback_link', array(
+			'label'       => esc_html__( 'Link for that text', 'fortify-offices' ),
+			'type'        => Controls_Manager::TEXT,
+			'default'     => '',
+			'description' => esc_html__( 'Optional, for example tel:4077774657.', 'fortify-offices' ),
 		) );
 		$this->add_preview_office_control();
 		$this->end_controls_section();
@@ -90,8 +103,29 @@ class Office_Info extends Widget_Base {
 
 		if ( ! $office ) {
 			if ( $s['fallback'] ) {
-				printf( '<%1$s class="fo-info">%2$s</%1$s>', tag_escape( $tag ), esc_html( $s['fallback'] ) );
+				$text = esc_html( $s['fallback'] );
+				if ( $s['fallback_link'] ) {
+					$text = '<a href="' . esc_url( $s['fallback_link'], array( 'http', 'https', 'tel', 'mailto' ) ) . '">' . $text . '</a>';
+				}
+				printf( '<%1$s class="fo-info">%2$s</%1$s>', tag_escape( $tag ), $text ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above.
 			}
+			return;
+		}
+
+		if ( 'map' === $s['field'] ) {
+			if ( null === $office['lat'] || null === $office['lng'] ) {
+				return;
+			}
+			wp_enqueue_style( 'leaflet' );
+			wp_enqueue_script( 'fortify-offices-finder' );
+			printf(
+				'<div class="fo-office-map" data-fo-map data-lat="%1$s" data-lng="%2$s" data-name="%3$s" style="height:%4$dpx" role="region" aria-label="%5$s"></div>',
+				esc_attr( $office['lat'] ),
+				esc_attr( $office['lng'] ),
+				esc_attr( $office['name'] ),
+				max( 200, (int) $s['map_height'] ),
+				esc_attr( sprintf( /* translators: %s: office name */ __( 'Map: %s office', 'fortify-offices' ), $office['name'] ) )
+			);
 			return;
 		}
 

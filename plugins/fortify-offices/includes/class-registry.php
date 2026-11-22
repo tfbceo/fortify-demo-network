@@ -43,6 +43,16 @@ class Registry {
 		add_action( 'save_post_' . self::POST_TYPE, array( __CLASS__, 'flush' ) );
 		add_action( 'deleted_post', array( __CLASS__, 'flush' ) );
 		add_action( 'trashed_post', array( __CLASS__, 'flush' ) );
+		// Scripts that set fields directly (phase 6 sets blog_id) must not leave a stale cache.
+		foreach ( array( 'added_post_meta', 'updated_post_meta', 'deleted_post_meta' ) as $hook ) {
+			add_action( $hook, array( __CLASS__, 'flush_on_meta' ), 10, 3 );
+		}
+	}
+
+	public static function flush_on_meta( $meta_id, $object_id, $meta_key ) {
+		if ( is_string( $meta_key ) && 0 === strpos( $meta_key, '_fo_' ) ) {
+			self::flush();
+		}
 	}
 
 	/** The post type lives on the main site only; other sites read it through all(). */

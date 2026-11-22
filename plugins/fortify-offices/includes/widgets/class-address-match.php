@@ -50,7 +50,13 @@ class Address_Match extends Widget_Base {
 		$this->add_control( 'matched', array(
 			'label'   => esc_html__( 'Matched', 'fortify-offices' ),
 			'type'    => Controls_Manager::TEXTAREA,
-			'default' => '{zip} is served by our {office} office. Your preview continues there, with a local broker.',
+			'default' => '{zip} is served by our {office} office, where a local broker prepares your preview.',
+		) );
+		$this->add_control( 'here', array(
+			'label'       => esc_html__( 'Matched this office (office sites)', 'fortify-offices' ),
+			'type'        => Controls_Manager::TEXTAREA,
+			'default'     => '{zip} is in the {office} area, so you are in the right place. A local broker prepares your preview.',
+			'description' => esc_html__( 'Shown on an office site when the ZIP belongs to that office.', 'fortify-offices' ),
 		) );
 		$this->add_control( 'matched_button', array(
 			'label'   => esc_html__( 'Matched button', 'fortify-offices' ),
@@ -110,10 +116,15 @@ class Address_Match extends Widget_Base {
 			$text  = $s['no_zip'];
 			$url   = add_query_arg( 'q', rawurlencode( $address ), $s['finder_url'] );
 			$label = $s['finder_button'];
+		} elseif ( $office && $office['blog_id'] && get_current_blog_id() === $office['blog_id'] ) {
+			$state = 'here';
+			$text  = $s['here'];
+			$url   = '';
+			$label = '';
 		} elseif ( $office && 'live' === $office['status'] ) {
 			$state = 'matched';
 			$text  = $s['matched'];
-			$url   = add_query_arg( 'address', rawurlencode( $address ), $office['url'] . 'preview/' );
+			$url   = $office['url']; // The office's home page. Office sites have no /preview/ page of their own.
 			$label = $s['matched_button'];
 		} elseif ( $office ) {
 			$state = 'soon';
@@ -129,7 +140,9 @@ class Address_Match extends Widget_Base {
 		?>
 		<div class="fo-match is-<?php echo esc_attr( $state ); ?>" data-fo-match="<?php echo esc_attr( $state ); ?>"<?php echo $office ? ' data-fo-office="' . esc_attr( $office['slug'] ) . '"' : ''; ?>>
 			<p><?php echo esc_html( strtr( $text, $vars ) ); ?></p>
-			<a class="fo-match-button" href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( strtr( $label, $vars ) ); ?></a>
+			<?php if ( $url ) : ?>
+				<a class="fo-match-button" href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( strtr( $label, $vars ) ); ?></a>
+			<?php endif; ?>
 		</div>
 		<?php
 	}

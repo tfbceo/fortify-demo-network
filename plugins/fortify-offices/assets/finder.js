@@ -171,7 +171,28 @@
 		search();
 	}
 
+	// Single-office map (Office Info widget, field "map").
+	function officeMap( el ) {
+		if ( ! window.L ) {
+			return;
+		}
+		var pos = [ parseFloat( el.dataset.lat ), parseFloat( el.dataset.lng ) ];
+		var map = window.L.map( el, { scrollWheelZoom: false } ).setView( pos, 11 );
+		window.L.tileLayer( 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 18,
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+		} ).addTo( map );
+		window.L.circleMarker( pos, { radius: 10, weight: 3, color: '#fff', fillColor: '#4F46E5', fillOpacity: 1 } )
+			.addTo( map ).bindPopup( esc( el.dataset.name ) );
+	}
+
 	function boot() {
+		document.querySelectorAll( '[data-fo-map]' ).forEach( function ( el ) {
+			if ( ! el.dataset.foReady ) {
+				el.dataset.foReady = '1';
+				officeMap( el );
+			}
+		} );
 		document.querySelectorAll( '[data-fo-finder]' ).forEach( function ( el ) {
 			if ( ! el.dataset.foReady ) {
 				el.dataset.foReady = '1';
@@ -188,6 +209,7 @@
 	window.addEventListener( 'elementor/frontend/init', function () {
 		if ( window.elementorFrontend && window.elementorFrontend.hooks ) {
 			window.elementorFrontend.hooks.addAction( 'frontend/element_ready/fortify-office-finder.default', boot );
+			window.elementorFrontend.hooks.addAction( 'frontend/element_ready/fortify-office-info.default', boot );
 		}
 	} );
 }() );

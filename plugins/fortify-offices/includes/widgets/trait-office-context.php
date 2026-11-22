@@ -28,6 +28,22 @@ trait Office_Context {
 		) );
 	}
 
+	/**
+	 * Office Profile to render: the office site's own profile; in the editor on
+	 * site 1, sample content (for the previewed office, if one is chosen);
+	 * otherwise an empty profile.
+	 */
+	protected function context_profile( array $settings ) {
+		if ( ! is_main_site() ) {
+			return \FortifyOffices\Profile::get();
+		}
+		if ( Elementor_Integration::is_editing() ) {
+			$office = ! empty( $settings['preview_office'] ) ? fortify_office( $settings['preview_office'] ) : null;
+			return \FortifyOffices\Profile::sample( $office );
+		}
+		return \FortifyOffices\Profile::normalize( array() );
+	}
+
 	/** The office to render, or null for the corporate site. */
 	protected function context_office( array $settings ) {
 		$office = fortify_office_for_site();

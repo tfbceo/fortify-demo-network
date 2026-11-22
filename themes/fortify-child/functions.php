@@ -5,12 +5,12 @@
  * Design tokens (colors, type, spacing, breakpoints) live in the Elementor kit
  * so they reach sitelets with the kit. This theme holds what the kit cannot:
  * Fortify component styles (assets/css/fortify.css), small behaviors, and the
- * Fortify widgets (savings calculator, address field).
+ * Fortify widgets (savings calculator, address field, listing card).
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'FORTIFY_CHILD_VERSION', '0.3.0' );
+define( 'FORTIFY_CHILD_VERSION', '0.4.0' );
 
 /** Asset version: the theme version plus the file's modified time, so edits are never served stale. */
 function fortify_child_asset_version( $relative ) {
@@ -58,8 +58,10 @@ add_action(
 	static function ( $widgets_manager ) {
 		require_once __DIR__ . '/inc/widgets/class-savings-calculator.php';
 		require_once __DIR__ . '/inc/widgets/class-address-field.php';
+		require_once __DIR__ . '/inc/widgets/class-listing-card.php';
 		$widgets_manager->register( new \FortifyChild\Widgets\Savings_Calculator() );
 		$widgets_manager->register( new \FortifyChild\Widgets\Address_Field() );
+		$widgets_manager->register( new \FortifyChild\Widgets\Listing_Card() );
 	}
 );
 
@@ -76,5 +78,34 @@ add_shortcode(
 			return '<p>' . esc_html__( 'No address was entered. Enter one below to try the form.', 'fortify-child' ) . '</p>';
 		}
 		return '<p>' . esc_html__( 'Address received:', 'fortify-child' ) . ' <b>' . esc_html( $address ) . '</b></p>';
+	}
+);
+
+/**
+ * On office sites, links to the home page ("/" and "/#start", in the shared
+ * header and copied sections) point at the office's own home instead of the
+ * corporate one. Other root-relative links (/plans/, /faqs/, /preview/ …)
+ * stay on the corporate site: Sitelets 1.1.3's fallback that should serve
+ * corporate pages at the same path on an office site renders "not found"
+ * (BUILD-SPEC section 11). Widen this once that is fixed.
+ */
+add_filter(
+	'elementor/widget/render_content',
+	static function ( $content ) {
+		if ( is_main_site() || false === strpos( $content, 'href="/' ) ) {
+			return $content;
+		}
+		$home = trailingslashit( home_url( '/' ) );
+		return preg_replace( '#\bhref="/(?=["\#])#', 'href="' . esc_url( $home ), $content );
+	}
+);
+
+/** Favicon from the theme on every site that has no Site Icon of its own. */
+add_action(
+	'wp_head',
+	static function () {
+		if ( ! has_site_icon() ) {
+			echo '<link rel="icon" type="image/png" href="' . esc_url( get_stylesheet_directory_uri() . '/assets/img/favicon-color.png' ) . '">' . "\n";
+		}
 	}
 );

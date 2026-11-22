@@ -71,7 +71,7 @@ These come from the 1.1.0 code review and drive the design below.
 | Publish overwrites a sitelet page's whole Elementor data, no merge (issue #20) | Hand-edited local content is lost on re-publish until merge Tier 1 lands. Office data must come from the registry (section 6). |
 | Locks are per-control settings keys in `_elementor_data` | The lock map in section 8 can be applied by script. |
 | Lock enforcement is editor-side only | Guided demos only until Phase 4. No prospect logins. |
-| On a sitelet 404, the plugin serves the main-site page with the same slug | Corporate inner pages appear on every sitelet without copying. Sitelet Page slugs must not collide with corporate page slugs. |
+| On a sitelet 404, the plugin is meant to serve the main-site page with the same slug | **Does not work in 1.1.3** (found 2026-11-22): it finds the page and clears the 404 flag but never puts the page into the main query, so the theme shows "page can't be found" with status 200. Until fixed, office sites link to corporate pages on the corporate site. Sitelet Page slugs must still not collide with corporate page slugs. |
 | Sitelet pages viewed as single posts output a canonical tag pointing at the main-site original. A page set as the front page is not covered. Tested 2026-11-21: the sitelet root has no canonical tag; the page's own URL (`/<office>/sitelet_page/<slug>/`) also stays live and canonicals to site 1. | Works against local search, and coverage is uneven. Product decision pending. Moot for the demo while the network is no-index. |
 | Publish to Sitelets handles Sitelet Pages only | Header, footer and kit changes made after an office is created do not propagate. Finalize them before creating offices (phase 5). See open items. |
 | The container widget whitelist is read only by the sitelet editor script, and the stored values (option indexes) do not match what the script compares (widget titles) | Treat the whitelist as not working in 1.1.0. Not used in the lock map until fixed. |
@@ -130,14 +130,16 @@ Until merge Tier 1 lands, every row marked Local is editable but not durable: th
 | Hero layout, images, buttons | Corporate | Every control locked |
 | Hero headline | Corporate default | Text control unlocked; typography and color locked |
 | Office name, phone, address, hours, counties, ZIPs, MLS line, license number | Registry | Rendered dynamically; nothing to edit in the page |
-| Team list | Registry | Rendered dynamically |
-| Market intro paragraph | Local | Text unlocked; style locked |
-| Local market notes, local FAQ entries | Local | Text unlocked; style locked |
-| Local reviews | Local | Fixed set of review widgets; text unlocked, style and layout locked. Restricting which widgets can be added waits for the whitelist fix. |
-| Sample listing card | Local | Image and text unlocked; layout locked |
+| Team list | Office Profile (on the office site) | Team List widget; edited on the office's Office Profile screen, nothing to edit in the page |
+| Market intro paragraph | Office Profile | Market Intro widget; edited on the Office Profile screen |
+| Hero headline, neighborhoods, local market notes, local FAQ entries | Local | Text control unlocked (Heading title, Text Editor content, FAQ item titles and answers); everything else locked |
+| Local reviews | Office Profile | Local Reviews widget; edited on the Office Profile screen, sample entries labelled |
+| Sample listing card | Local | Listing Card widget: photo, details and note sections unlocked; layout, style and Advanced sections locked |
 | Template-only notes for corporate editors | Corporate | Top-level container set to Admin only. Never nested. |
 
 Give every top-level container a clear CSS ID so locks and tests can target it.
+
+**Office Profile** (added 2026-11-22): office-owned content stored on each office site (option `fortify_office_profile`): market intro, team members (name, title, bio, photo URL) and local reviews (name, location, rating, text, sample flag). Edited on the sitelet's own Office Profile admin screen by users with `edit_pages` there (local editors); the screen does not exist on site 1, and local editors have no role on site 1. Photos are stored as URLs because office sites use the main site's media library (Sitelets blocks uploads there). Rendered by the Market Intro, Team List and Local Reviews widgets. Like registry data, it is read at render time, so a corporate re-publish cannot erase it (issue #20).
 
 **Anything marked Local or Registry above is a native widget or a custom widget with its own controls, never an HTML widget** (decision 2026-11-22). An HTML widget has one code control: unlocking it hands the office the whole block, layout included, and locking it leaves nothing to edit. This covers the sample listing card on office pages, which becomes a Listing Card widget in `fortify-child` (image, price, address, beds/baths/sqft, savings line as separate controls). HTML widgets stay acceptable only inside fully locked corporate sections.
 
@@ -177,7 +179,9 @@ Not to be shown before merge Tier 2: corporate changes to unlocked content reach
    Six registry widgets (Elementor category "Fortify registry"): Office Directory (footer list or markets grid), State Coverage, Licensing Block (office's broker and license on an office site; corporate brokerage from the network option `fortify_offices_brokerage` on site 1), Office Info (one field of the current office; covers name, phone, address, hours, MLS line, counties, ZIPs, broker, license), Location Finder (ZIP/city/county search, state filter, Leaflet 1.9.4 from unpkg with OpenStreetMap tiles, not-covered result), Address Match (routes `?address=` on `/preview/` to the office, a coming-soon note, or the not-covered result linking to `/contact/`). Office-aware widgets have a "Preview with office" control for authoring templates on site 1. Office sites get RealEstateAgent JSON-LD on the front page. Team list waits for phase 5 (no team data shape yet).
    Replaced static pieces: footer office directory, About coverage list (now lists the registry's counties, 11, where the live site lists 20), Contact brokerage block, and the address form's routing (result on `/preview/`, continue button to the office's `/preview/`). New page `/locations/` with the finder; header menu gains "Find your market". Widget types 161 of 200 in the Sitelet Page editor context (160 on the front end); each registry widget gets Sitelets lock toggles (326–336).
 5. **Office templates.** Finalize the Theme Builder header and footer and the global kit. Build the six Sitelet Pages on site 1; tick "Sitelet home page" on the office Home page; apply the lock map; publish. Before applying it, check that no Local or Registry item is an HTML widget (section 8). Nothing in this phase can be changed cheaply once offices exist.
-6. **Offices.** Check first that the kit is final (phase 2 note). Create the twelve sites; confirm the new-site sync delivered pages, templates and kit, and that each front page is the office Home (set by the plugin from the Sitelet home page checkbox); create one local editor per office. Expect issue #25 log noise.
+   **Built 2026-11-22.** Header: nav is plain links (icon list), not a WordPress menu, because Sitelets does not copy menus to new sites; footer phone is the office's phone (Office Info) with the corporate line on site 1. On office sites the theme points `/` and `/#start` links at the office home; other links stay on corporate (see the 404-fallback row in section 5). Kit unchanged from phase 2 and final; favicon comes from the theme. Six Sitelet Pages built by `scripts/build-office-templates.php`: `office` (Office Home, marked Sitelet home page), `service-area`, `team`, `reviews`, `local-faq`, `visit`, with the CSS IDs from SEED-PLAN section 5. The office home's corporate sections are copied from the corporate home page by the script. Lock map applied by the script as Sitelets lock keys: 185 elements fully locked (every control section), 7 with only their text editable, 1 Listing Card with its content sections editable. Template notes sit in a top-level Admin-only container (`#office-admin-notes`), removed on copy. Published (status publish); there are no office sites yet, so Publish to Sitelets has nothing to push; the new-site sync copies the pages in phase 6. New widgets: Market Intro, Team List, Local Reviews (fortify-offices), Listing Card (fortify-child). Widget types 165 of 200 in the Sitelet Page editor context.
+   Checked on a throwaway sitelet (created, linked to the Tampa record, then deleted with its tables, uploads, user and license slot): pages, templates and front page arrived; registry and profile data rendered for Tampa; the admin-only notes were removed; a local editor could edit the profile and had no access on site 1; profile input was sanitized; lock keys arrived on the copies. Not checked: the lock behaviour in the office editor UI (needs a signed-in browser).
+6. **Offices.** Check first that the kit is final (phase 2 note). For each office: set the registry record's site ID, seed its Office Profile with `Profile::sample()`, and check the office front end loads `custom-frontend.min.css` (Elementor's custom-breakpoint styles; if missing, run `Breakpoints\Manager::compile_stylesheet_templates()` on that site). Create the twelve sites; confirm the new-site sync delivered pages, templates and kit, and that each front page is the office Home (set by the plugin from the Sitelet home page checkbox); create one local editor per office. Expect issue #25 log noise.
 7. **Smoke test.** Run `docs/TESTING.md` from the plugin repo.
 8. **Clone.** Copy the network to the local demo environment; later push the online demo.
 
@@ -191,10 +195,17 @@ Decisions for Ralph:
 - Confirm the license's activation limit covers the install URLs in use. There are three installs (local test, local demo, online demo). Check in the store whether local development URLs count toward the limit; the online demo certainly does.
 - Decide whether sitelet pages should point their canonical tag at corporate.
 
+Sitelets plugin issues found in phase 5 (plugin repo, 2026-11-22):
+
+- The 404 fallback (`global_content.php`) does not render the main-site page; see section 5.
+- `update_sitelet_posts()` looks for an existing copy only among `sitelet_page` posts, so re-publishing Theme Builder templates or the kit to an existing sitelet would create duplicates instead of updating.
+- Container "Available on: Sitelet only" hides the container everywhere, including on sitelets (`container-extended.php` `print_content()`); "Admin only" works (removed on copy). The office templates use only Admin only.
+- Menus are not copied to new sitelets; the header avoids menus for that reason.
+
 To verify in the test environment:
 
 - ~~How a Sitelet Page becomes a sitelet's front page.~~ Resolved 2026-11-21: Sitelets 1.1.2's Sitelet home page checkbox (see section 5 table).
-- Whether Sitelet Pages are publicly reachable on site 1, and whether the "Only show on" document setting hides them.
+- ~~Whether Sitelet Pages are publicly reachable on site 1.~~ Yes: at `/blog/sitelet_page/{slug}/` (2026-11-22). Whether the "Only show on" document setting hides them is still open.
 - ~~Whether Elementor Pro Theme Builder display conditions carry to new sites.~~ Resolved 2026-11-21: they did not on 1.1.1 (double-serialized); they do from 1.1.2, which also rebuilds the conditions cache.
 - How header, footer and kit changes reach existing sitelets after creation.
 - ~~Whether `wp site create` triggers the new-site sync.~~ Resolved 2026-11-21: yes.

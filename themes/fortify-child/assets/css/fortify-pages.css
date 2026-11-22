@@ -424,3 +424,32 @@
 .fx-stub .fx-lead p { margin-top: 10px; }
 .fx-stub .fx-lead p + p { margin-top: 10px; }
 .fx-stub .elementor-widget-fortify-address-field { margin-top: 24px; width: 100%; }
+
+/* ---------- Office pages ---------- */
+
+.fx-lc { background: #fff; border: 1px solid var(--fx-line); border-radius: var(--radius-lg, 24px); overflow: hidden; box-shadow: var(--shadow-md); max-width: 460px; }
+.fx-lc-photo { position: relative; aspect-ratio: 16 / 10; background: var(--fx-lav-2) center / cover no-repeat; }
+.fx-lc-badge { position: absolute; top: 12px; left: 12px; background: var(--fx-ink); color: #fff; font-size: .66rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; }
+.fx-lc-body { padding: 20px 22px 22px; }
+.fx-lc-price { font-size: 1.6rem; font-weight: 800; color: var(--fx-ink); line-height: 1.1; }
+.fx-lc-facts { margin-top: 6px; font-size: .9rem; font-weight: 600; color: var(--fx-slate); }
+.fx-lc-addr { margin-top: 4px; font-size: .9rem; color: var(--fx-muted); }
+.fx-lc-desc { margin-top: 12px; font-size: .94rem; color: var(--fx-slate); line-height: 1.6; }
+.fx-lc-savings { margin-top: 14px; display: flex; align-items: center; gap: 8px; font-size: .86rem; font-weight: 700; color: var(--fx-emerald-dark); background: var(--fx-emerald-tint); border-radius: 10px; padding: 9px 12px; }
+.fx-lc-link { display: inline-block; margin-top: 12px; font-weight: 700; color: var(--fx-indigo); }
+.fx-lc-note { margin-top: 12px !important; font-size: 12.5px; color: var(--fx-muted); }
+.fx-office-eyebrow .fo-info { margin: 0; font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--fx-indigo); }
+.fx-office-facts .fo-info { margin: 0; font-size: 1rem; color: var(--fx-slate); line-height: 1.6; }
+.fx-office-facts .fo-info--name { font-size: 1.3rem; font-weight: 800; color: var(--fx-ink); }
+.fx-office-facts .fo-info a { color: var(--fx-indigo); font-weight: 700; }
+.fx-office-facts > .elementor-widget + .elementor-widget { margin-top: 6px; }
+.fx-local-note p { font-size: .82rem; color: var(--fx-muted); }
+.fx-admin-note { background: #FFF8E1; border: 1px dashed #E0B000; border-radius: 12px; padding: 18px 22px !important; }
+.fx-admin-note p { font-size: .9rem; color: #5B4A00; }
+.fx-admin-note p + p { margin-top: 8px; }
+.fx-nav-links .elementor-icon-list-items { display: flex; gap: 0; }
+.fx-nav-links .elementor-icon-list-item { margin: 0 !important; padding: 0 !important; }
+.fx-nav-links .elementor-icon-list-item::after { display: none !important; }
+.fx-nav-links .elementor-icon-list-item a { padding: 0 15px; }
+.fx-nav-links .elementor-icon-list-text { font-weight: 600; font-size: .95rem; color: var(--fx-ink); padding: 0 !important; }
+.fx-nav-links .elementor-icon-list-item a:hover .elementor-icon-list-text { color: var(--fx-indigo); }

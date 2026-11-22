@@ -1,7 +1,7 @@
 <?php
 /**
- * Phase 3: corporate homepage, plus the Theme Builder header and footer it
- * needs (finalized in phase 5), on site 1.
+ * Phase 3: corporate homepage, plus the Theme Builder header and footer
+ * (finalized in phase 5: menu-free nav, office phone in the footer), on site 1.
  *
  *   wp eval-file scripts/build-home.php
  *
@@ -29,32 +29,6 @@ $img     = wp_make_link_relative( get_stylesheet_directory_uri() ) . '/assets/im
 $lic_url = 'https://www.myfloridalicense.com/portalsearches/VerifyLicensee/LicenseDetail?ID=2F584AC97289A0AF647A608799927DA4';
 $app_url = 'https://app.fortifylistings.com/';
 $check   = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
-
-/* ====================================================================
- * Menu (header nav)
- * ================================================================== */
-
-$menu_name = 'Fortify primary';
-$menu      = wp_get_nav_menu_object( $menu_name );
-$menu_id   = $menu ? $menu->term_id : wp_create_nav_menu( $menu_name );
-foreach ( (array) wp_get_nav_menu_items( $menu_id ) as $old ) {
-	wp_delete_post( $old->ID, true );
-}
-foreach ( array(
-	array( 'How it works', '/how-it-works/' ),
-	array( 'Plans', '/plans/' ),
-	array( 'FAQ', '/faqs/' ),
-	array( 'Find your market', '/locations/' ),
-) as $i => $item ) {
-	wp_update_nav_menu_item( $menu_id, 0, array(
-		'menu-item-title'    => $item[0],
-		'menu-item-url'      => $item[1],
-		'menu-item-type'     => 'custom',
-		'menu-item-status'   => 'publish',
-		'menu-item-position' => $i + 1,
-	) );
-}
-$menu_slug = wp_get_nav_menu_object( $menu_id )->slug;
 
 /* ====================================================================
  * Header (Theme Builder)
@@ -94,24 +68,18 @@ $header = array(
 					'width'            => array( 'unit' => 'custom', 'size' => 'auto' ),
 				),
 				array(
-					fx_w( 'nav-menu', array(
-						'menu'              => $menu_slug,
-						'layout'            => 'horizontal',
-						'pointer'           => 'none',
-						'dropdown'          => 'none',
-						'toggle'            => '',
+					// Plain links, not a WordPress menu: Sitelets does not copy menus to
+					// new office sites, and a menu widget would render empty there.
+					fx_list( array(
+						array( 'text' => 'How it works', 'url' => '/how-it-works/' ),
+						array( 'text' => 'Plans', 'url' => '/plans/' ),
+						array( 'text' => 'FAQ', 'url' => '/faqs/' ),
+						array( 'text' => 'Find your market', 'url' => '/locations/' ),
+					), 'fx-nav-links', '', 'fa-solid', array(
+						'view'              => 'inline',
 						'hide_tablet'       => 'hidden-tablet',
 						'hide_mobile_extra' => 'hidden-mobile_extra',
 						'hide_mobile'       => 'hidden-mobile',
-						'color_menu_item'        => '#1E1B4B',
-						'color_menu_item_hover'  => '#4F46E5',
-						'color_menu_item_active' => '#1E1B4B',
-						'__globals__'            => array(
-							'color_menu_item'        => 'globals/colors?id=secondary',
-							'color_menu_item_hover'  => 'globals/colors?id=primary',
-							'color_menu_item_active' => 'globals/colors?id=secondary',
-						),
-						'_css_classes'      => 'fx-nav',
 					) ),
 					fx_text( '<a href="' . esc_url( $app_url ) . '">Sign in</a>', 'fx-nav-signin', array(
 						'hide_tablet'       => 'hidden-tablet',
@@ -166,7 +134,13 @@ $footer = array(
 							'_css_classes' => 'fx-logo fx-logo--light',
 						) ),
 						fx_text( '<p>Broker-supported flat fee MLS listing for capable Florida sellers.</p>', 'fx-foot-blurb' ),
-						fx_text( '<p><a href="tel:4077774657">(407) 777-4-MLS</a></p>', 'fx-foot-phone' ),
+						// The office's phone on an office site; the corporate line on site 1.
+						fx_w( 'fortify-office-info', array(
+							'field'         => 'phone',
+							'fallback'      => '(407) 777-4-MLS',
+							'fallback_link' => 'tel:4077774657',
+							'_css_classes'  => 'fx-foot-phone',
+						) ),
 					)
 				),
 				$foot_col( 'Learn', array(

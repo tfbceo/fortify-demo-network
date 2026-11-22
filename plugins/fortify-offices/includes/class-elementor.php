@@ -20,6 +20,9 @@ class Elementor_Integration {
 		'class-office-info.php'      => 'Office_Info',
 		'class-office-finder.php'    => 'Office_Finder',
 		'class-address-match.php'    => 'Address_Match',
+		'class-market-intro.php'     => 'Market_Intro',
+		'class-team-list.php'        => 'Team_List',
+		'class-local-reviews.php'    => 'Local_Reviews',
 	);
 
 	public static function init() {

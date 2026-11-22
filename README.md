@@ -16,7 +16,7 @@ docs/SEED-PLAN.md       office records, routing and template content to seed
 docs/ENVIRONMENTS.md    local test, local demo, online demo; snapshot and reset
 themes/fortify-child/   child theme of Hello Elementor
 mu-plugins/             fortify-noindex.php: keeps the whole network out of search engines
-plugins/fortify-offices/ office registry: post type, ZIP routing, finder and registry widgets
+plugins/fortify-offices/ office registry (post type, ZIP routing, finder, registry widgets) and the per-office Office Profile
   data/                 offices.json (seed records) and office-zips.json (generated ZIP map)
 config/                 htaccess-multisite-subdirectory: rewrite rules for Apache
 scripts/apply-kit.php   phase 2: design system on the site 1 Elementor kit
@@ -24,12 +24,13 @@ scripts/build-home.php  phase 3: corporate homepage + Theme Builder header and f
 scripts/build-pages.php phase 3: corporate inner pages, legal pages, /preview/ stub
 scripts/lib/            element helpers shared by the build scripts
 scripts/seed-offices.php phase 4: seed the twelve office records
+scripts/build-office-templates.php  phase 5: the six office Sitelet Pages, with the lock map
 scripts/tools/build-zip-map.py  regenerate office-zips.json from the Census ZIP-to-county file
 ```
 
 Scripts run with `wp eval-file` on site 1 and are re-runnable: each replaces what it made before.
 
-Coming as they are built: more `scripts/` (office templates and the lock map).
+Coming as they are built: the phase 6 office-creation script.
 
 ## Rebuild from a fresh LocalWP site
 
@@ -67,6 +68,7 @@ Tested against: WordPress 7.1.5, PHP 8.5, Elementor 4.4.1, Elementor Pro 4.4.0, 
    wp eval-file <repo>/scripts/apply-kit.php
    wp eval-file <repo>/scripts/build-home.php
    wp eval-file <repo>/scripts/build-pages.php
+   wp eval-file <repo>/scripts/build-office-templates.php
    ```
    The home page becomes the static front page, the header and footer apply to the entire site, the inner pages, legal pages, `/locations/` finder and `/preview/` stub are created at the live site's slugs.
 10. **Continue with the build phases** in `docs/BUILD-SPEC.md` section 10. Phase 1's gating checks have been passed on Sitelets 1.1.3 and do not need repeating on a rebuild.
