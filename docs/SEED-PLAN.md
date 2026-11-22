@@ -48,6 +48,8 @@ golden-master demo network (ENVIRONMENTS.md envs 2 & 3; built on env 1). Apply i
 
 ## 2. ZIP routing (phase 4 finder; representative demo subset, not a coverage map)
 
+> **Superseded 2026-11-22:** the seeded registry uses full county coverage from the Census ZIP-to-county file (628 ZIPs, Palm Beach split by ZIP). See BUILD-SPEC section 10, phase 4, and `plugins/fortify-offices/data/office-zips.json`. The table below is kept as test ZIPs; all of them route as listed.
+
 Routing resolves a ZIP → office. The Palm Beach County split (offices 9 & 10) is the key demo of
 **ZIP-level** routing within one county.
 

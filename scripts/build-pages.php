@@ -4,14 +4,14 @@
  *
  *   wp eval-file scripts/build-pages.php
  *
- * Run after build-home.php (the header, footer and kit come from there and
- * from apply-kit.php). Re-runnable: finds its own pages by the
+ * Run after seed-offices.php and build-home.php (registry data, header,
+ * footer and kit come from those and from apply-kit.php). Re-runnable: finds its own pages by the
  * `_fortify_build_key` meta and replaces their Elementor data.
  *
  * Source: tfbceo/Fortify-Listings-FE-Website (2026-07-28), pages how-it-works,
  * plans, faqs, about, contact and the five legal pages. Every top-level
  * container has a CSS ID prefixed with the page (hiw-, plans-, faqs-, about-,
- * contact-, legal-, sla-, preview-). Calls to action that pointed at the
+ * contact-, legal-, sla-, preview-, locations-). Calls to action that pointed at the
  * Fortify app go to the homepage address field (/#start) instead; the demo
  * has no app.
  */
@@ -694,12 +694,6 @@ $built = static function ( $icon, $tone, $title, $text ) {
 $tile = static function ( $label, $value, $sub ) {
 	return fx_text( '<p class="label">' . $label . '</p><p class="value">' . $value . '</p><p class="sub">' . $sub . '</p>', 'fx-tile' );
 };
-$state = static function ( $name, $badge_html, $paras ) {
-	return fx_box( 'State: ' . $name, 'fx-state', array(
-		fx_heading( $name . ' ' . $badge_html, 'h3' ),
-		fx_text( $paras, 'fx-lead' ),
-	) );
-};
 $value = static function ( $n, $title, $text ) {
 	return fx_con( array( '_title' => 'Value ' . $n, 'css_classes' => 'fx-value', 'flex_direction' => 'row', 'flex_wrap' => 'nowrap', 'flex_align_items' => 'flex-start', 'flex_gap' => fx_gap( 18 ) ), array(
 		fx_heading( $n, 'div', 'fx-value-num' ),
@@ -787,11 +781,7 @@ $about = array(
 
 	$sec( 'about-coverage', 'Where we operate', '', array(
 		$intro( 'Where we operate', 'Active today in Florida, expanding to Arizona and Tennessee', 'Fortify currently serves select Florida MLS markets. We hold active broker licenses in Arizona and Tennessee and are expanding to serve those markets.', 'fx-intro-wide', 'fx-h2s' ),
-		$grid( 'States', 'fx-card-grid', 3, 3, 1, 20, array(
-			$state( 'Florida', '<span class="fx-badge is-active">Active</span>', '<p>Serving select county MLS markets across the state.</p><p class="counties">Alachua · Broward · Charlotte · DeSoto · Flagler · Hillsborough · Lake · Marion · Martin · Miami-Dade · Okeechobee · Orange · Osceola · Palm Beach · Pasco · Polk · St. Lucie · Sarasota · Sumter · Volusia</p><p class="note">Enter your address to confirm your county is covered — coverage continues to expand.</p>' ),
-			$state( 'Arizona', '<span class="fx-badge is-soon">Coming soon</span>', "<p>Active broker license held. Expansion to Arizona MLS markets in progress.</p><p class=\"note\">Contact us if you're interested in listing in Arizona and we'll notify you when coverage launches in your area.</p>" ),
-			$state( 'Tennessee', '<span class="fx-badge is-soon">Coming soon</span>', "<p>Active broker license held. Expansion to Tennessee MLS markets in progress.</p><p class=\"note\">Contact us if you're interested in listing in Tennessee and we'll notify you when coverage launches in your area.</p>" ),
-		) ),
+		fx_w( 'fortify-state-coverage', array( '_css_classes' => 'fx-card-grid' ) ),
 	), 0, 88 ),
 
 	$sec( 'about-values', 'Values', '', array(
@@ -847,7 +837,7 @@ $contact = array(
 				) ),
 				fx_box( 'Brokerage information', 'fx-broker-info', array(
 					fx_heading( 'Brokerage Information', 'h3' ),
-					fx_text( '<p>Fortify Listing Services LLC<br>Sarasota, FL<br>FL Brokerage License #CQ1074119<br><a href="' . esc_url( $lic_url ) . '" target="_blank" rel="noopener noreferrer">Verify license →</a></p>', 'fx-lead' ),
+					fx_w( 'fortify-license-block', array( '_css_classes' => 'fx-lead' ) ),
 				) ),
 			) ),
 		), array( 'grid_align_items' => 'start', 'grid_gaps_tablet' => fx_gap( 32, 32 ) ) ),
@@ -985,7 +975,10 @@ $sla = array(
 $preview = array(
 	$hero( 'preview-hero', 'Free listing preview', 'Your preview request',
 		'Thanks. This is where a broker-reviewed preview of your home begins.',
-		array( fx_w( 'shortcode', array( 'shortcode' => '[fortify_preview_address]', '_css_classes' => 'fx-preview-got' ) ) ) ),
+		array(
+			fx_w( 'shortcode', array( 'shortcode' => '[fortify_preview_address]', '_css_classes' => 'fx-preview-got' ) ),
+			fx_w( 'fortify-address-match', array() ),
+		) ),
 
 	$sec( 'preview-body', 'Demo stub', '', array(
 		fx_box( 'Demo note', 'fx-stub', array(
@@ -1002,6 +995,18 @@ $preview = array(
 );
 
 /* ====================================================================
+ * Locations (finder)
+ * ================================================================== */
+
+$locations = array(
+	$hero( 'locations-hero', 'Find your market', 'Find your local Fortify office',
+		'Enter a ZIP code, city or county to see which office serves your home. Each office lists homes on its local MLS, with a licensed broker reviewing every listing.' ),
+	$sec( 'locations-finder', 'Location finder', '', array(
+		fx_w( 'fortify-office-finder', array() ),
+	), 48, 88 ),
+);
+
+/* ====================================================================
  * Save
  * ================================================================== */
 
@@ -1013,6 +1018,7 @@ $pages = array(
 	'contact'                          => array( 'Contact', $contact ),
 	'fortify-sample-listing-agreement' => array( 'Sample Listing Agreement', $sla ),
 	'preview'                          => array( 'Preview', $preview ),
+	'locations'                        => array( 'Locations', $locations ),
 );
 foreach ( $legal as $slug => $l ) {
 	$pages[ $slug ] = array( $l[0], $l[1] );

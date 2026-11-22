@@ -44,6 +44,7 @@ foreach ( array(
 	array( 'How it works', '/how-it-works/' ),
 	array( 'Plans', '/plans/' ),
 	array( 'FAQ', '/faqs/' ),
+	array( 'Find your market', '/locations/' ),
 ) as $i => $item ) {
 	wp_update_nav_menu_item( $menu_id, 0, array(
 		'menu-item-title'    => $item[0],
@@ -139,8 +140,6 @@ $foot_col = static function ( $title, array $links ) {
 	);
 };
 
-$offices_fl = array( 'Tampa', 'St. Petersburg-Clearwater', 'Orlando', 'Sarasota-Bradenton', 'Lakeland-Winter Haven', 'Miami', 'Fort Lauderdale', 'Boca Raton-Delray Beach', 'West Palm Beach-Jupiter', 'Naples' );
-
 $footer = array(
 	fx_con(
 		array(
@@ -189,10 +188,10 @@ $footer = array(
 					array( 'text' => 'Sample agreement', 'url' => '/fortify-sample-listing-agreement/' ),
 				) ),
 			), array( '_title' => 'Footer columns', 'css_classes' => 'fx-foot-top', 'grid_columns_grid_mobile' => array( 'unit' => 'fr', 'size' => 1 ) ) ),
-			// Placeholder until the fortify-offices footer directory widget (phase 4).
+			// Office directory from the registry (fortify-offices).
 			fx_con(
 				array(
-					'_title'         => 'Office directory (static placeholder; fortify-offices widget in phase 4)',
+					'_title'         => 'Office directory',
 					'_element_id'    => 'footer-offices',
 					'css_classes'    => 'fx-foot-offices',
 					'flex_direction' => 'column',
@@ -200,12 +199,10 @@ $footer = array(
 				),
 				array(
 					fx_heading( 'Our offices', 'p', 'fx-foot-head' ),
-					fx_text(
-						'<p><b>Florida</b> ' . esc_html( implode( ' · ', $offices_fl ) ) . '</p>' .
-						'<p><b>Arizona</b> Phoenix <span class="fx-soon">Coming soon</span></p>' .
-						'<p><b>Tennessee</b> Nashville <span class="fx-soon">Coming soon</span></p>',
-						'fx-foot-office-list'
-					),
+					fx_w( 'fortify-office-directory', array(
+						'layout'       => 'list',
+						'_css_classes' => 'fx-foot-office-list',
+					) ),
 				)
 			),
 			fx_text(

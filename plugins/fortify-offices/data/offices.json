@@ -1,0 +1,21 @@
+{
+ "_note": "Demo seed for the office registry (docs/SEED-PLAN.md section 1). Phones, addresses, hours, brokers and license numbers are SAMPLE placeholders, not real. ZIP codes come from office-zips.json. blog_id stays 0 until the office's site exists (phase 6).",
+ "defaults": {
+  "hours": "Mon–Fri 9:00–5:00; Sat by appointment",
+  "broker": "Sample Broker (demo)"
+ },
+ "offices": [
+  { "slug": "tampa", "name": "Tampa", "city": "Tampa", "state": "FL", "mls": "Stellar MLS", "counties": ["Hillsborough"], "status": "live", "lat": 27.95, "lng": -82.46, "phone": "(555) 012-0000", "zip": "33602", "license_no": 2 },
+  { "slug": "st-petersburg", "name": "St. Petersburg–Clearwater", "city": "St. Petersburg", "state": "FL", "mls": "Stellar MLS", "counties": ["Pinellas"], "status": "live", "lat": 27.77, "lng": -82.64, "phone": "(555) 013-0000", "zip": "33701", "license_no": 3 },
+  { "slug": "orlando", "name": "Orlando", "city": "Orlando", "state": "FL", "mls": "Stellar MLS", "counties": ["Orange", "Seminole"], "status": "live", "lat": 28.54, "lng": -81.38, "phone": "(555) 014-0000", "zip": "32801", "license_no": 4 },
+  { "slug": "sarasota", "name": "Sarasota–Bradenton", "city": "Sarasota", "state": "FL", "mls": "Stellar MLS", "counties": ["Sarasota", "Manatee"], "status": "live", "lat": 27.34, "lng": -82.53, "phone": "(555) 015-0000", "zip": "34236", "license_no": 5 },
+  { "slug": "lakeland", "name": "Lakeland–Winter Haven", "city": "Lakeland", "state": "FL", "mls": "Stellar MLS", "counties": ["Polk"], "status": "live", "lat": 28.04, "lng": -81.95, "phone": "(555) 016-0000", "zip": "33801", "license_no": 6 },
+  { "slug": "miami", "name": "Miami", "city": "Miami", "state": "FL", "mls": "Miami MLS", "counties": ["Miami-Dade"], "status": "live", "lat": 25.76, "lng": -80.19, "phone": "(555) 017-0000", "zip": "33130", "license_no": 7 },
+  { "slug": "fort-lauderdale", "name": "Fort Lauderdale", "city": "Fort Lauderdale", "state": "FL", "mls": "Miami MLS", "counties": ["Broward"], "status": "live", "lat": 26.12, "lng": -80.14, "phone": "(555) 018-0000", "zip": "33301", "license_no": 8 },
+  { "slug": "boca-raton", "name": "Boca Raton–Delray Beach", "city": "Boca Raton", "state": "FL", "mls": "Miami MLS", "counties": ["Palm Beach (south)"], "status": "live", "lat": 26.36, "lng": -80.08, "phone": "(555) 019-0000", "zip": "33432", "license_no": 9 },
+  { "slug": "west-palm-beach", "name": "West Palm Beach–Jupiter", "city": "West Palm Beach", "state": "FL", "mls": "Miami MLS", "counties": ["Palm Beach (north)"], "status": "live", "lat": 26.71, "lng": -80.05, "phone": "(555) 020-0000", "zip": "33401", "license_no": 10 },
+  { "slug": "naples", "name": "Naples", "city": "Naples", "state": "FL", "mls": "Southwest Florida MLS (NABOR)", "counties": ["Collier"], "status": "live", "lat": 26.14, "lng": -81.79, "phone": "(555) 021-0000", "zip": "34102", "license_no": 11 },
+  { "slug": "phoenix", "name": "Phoenix", "city": "Phoenix", "state": "AZ", "mls": "ARMLS", "counties": ["Maricopa"], "status": "coming_soon", "lat": 33.45, "lng": -112.07, "phone": "(555) 022-0000", "zip": "85003", "license_no": 12 },
+  { "slug": "nashville", "name": "Nashville", "city": "Nashville", "state": "TN", "mls": "Realtracs", "counties": ["Davidson", "Williamson"], "status": "coming_soon", "lat": 36.16, "lng": -86.78, "phone": "(555) 023-0000", "zip": "37201", "license_no": 13 }
+ ]
+}
