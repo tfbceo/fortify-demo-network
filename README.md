@@ -19,6 +19,8 @@ mu-plugins/             fortify-noindex.php: keeps the whole network out of sear
 config/                 htaccess-multisite-subdirectory: rewrite rules for Apache
 scripts/apply-kit.php   phase 2: design system on the site 1 Elementor kit
 scripts/build-home.php  phase 3: corporate homepage + Theme Builder header and footer
+scripts/build-pages.php phase 3: corporate inner pages, legal pages, /preview/ stub
+scripts/lib/            element helpers shared by the build scripts
 ```
 
 Scripts run with `wp eval-file` on site 1 and are re-runnable: each replaces what it made before.
@@ -58,8 +60,9 @@ Tested against: WordPress 7.1.5, PHP 8.5, Elementor 4.4.1, Elementor Pro 4.4.0, 
    ```
    wp eval-file <repo>/scripts/apply-kit.php
    wp eval-file <repo>/scripts/build-home.php
+   wp eval-file <repo>/scripts/build-pages.php
    ```
-   The home page becomes the static front page, and the header and footer apply to the entire site.
+   The home page becomes the static front page, the header and footer apply to the entire site, and the inner pages, legal pages and `/preview/` stub are created at the live site's slugs.
 10. **Continue with the build phases** in `docs/BUILD-SPEC.md` section 10. Phase 1's gating checks have been passed on Sitelets 1.1.3 and do not need repeating on a rebuild.
 
 ## Working rules

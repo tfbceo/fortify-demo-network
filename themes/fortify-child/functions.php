@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'FORTIFY_CHILD_VERSION', '0.2.0' );
+define( 'FORTIFY_CHILD_VERSION', '0.3.0' );
 
 /** Asset version: the theme version plus the file's modified time, so edits are never served stale. */
 function fortify_child_asset_version( $relative ) {
@@ -29,6 +29,7 @@ add_action(
 		$uri = get_stylesheet_directory_uri();
 		wp_enqueue_style( 'fortify-child', get_stylesheet_uri(), array(), fortify_child_asset_version( 'style.css' ) );
 		wp_enqueue_style( 'fortify-components', $uri . '/assets/css/fortify.css', array(), fortify_child_asset_version( 'assets/css/fortify.css' ) );
+		wp_enqueue_style( 'fortify-pages', $uri . '/assets/css/fortify-pages.css', array( 'fortify-components' ), fortify_child_asset_version( 'assets/css/fortify-pages.css' ) );
 		wp_enqueue_script( 'fortify', $uri . '/assets/js/fortify.js', array(), fortify_child_asset_version( 'assets/js/fortify.js' ), array( 'in_footer' => true ) );
 		wp_register_script( 'fortify-savings-calculator', $uri . '/assets/js/savings-calculator.js', array(), fortify_child_asset_version( 'assets/js/savings-calculator.js' ), array( 'in_footer' => true ) );
 	},
@@ -40,6 +41,7 @@ add_action(
 	'elementor/preview/enqueue_styles',
 	static function () {
 		wp_enqueue_style( 'fortify-components', get_stylesheet_directory_uri() . '/assets/css/fortify.css', array(), fortify_child_asset_version( 'assets/css/fortify.css' ) );
+		wp_enqueue_style( 'fortify-pages', get_stylesheet_directory_uri() . '/assets/css/fortify-pages.css', array( 'fortify-components' ), fortify_child_asset_version( 'assets/css/fortify-pages.css' ) );
 	}
 );
 
@@ -58,5 +60,21 @@ add_action(
 		require_once __DIR__ . '/inc/widgets/class-address-field.php';
 		$widgets_manager->register( new \FortifyChild\Widgets\Savings_Calculator() );
 		$widgets_manager->register( new \FortifyChild\Widgets\Address_Field() );
+	}
+);
+
+/**
+ * [fortify_preview_address] for the /preview/ demo stub: shows the address
+ * the Address Field sent (?address=…), escaped. The stub stores nothing.
+ */
+add_shortcode(
+	'fortify_preview_address',
+	static function () {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display of a GET value.
+		$address = isset( $_GET['address'] ) ? sanitize_text_field( wp_unslash( $_GET['address'] ) ) : '';
+		if ( '' === $address ) {
+			return '<p>' . esc_html__( 'No address was entered. Enter one below to try the form.', 'fortify-child' ) . '</p>';
+		}
+		return '<p>' . esc_html__( 'Address received:', 'fortify-child' ) . ' <b>' . esc_html( $address ) . '</b></p>';
 	}
 );
