@@ -30,7 +30,7 @@ class Profile {
 
 	/** Profile of the office site $blog_id (default current), normalized. */
 	public static function get( $blog_id = null ) {
-		$blog_id = $blog_id ? (int) $blog_id : get_current_blog_id();
+		$blog_id = $blog_id ? (int) $blog_id : fortify_offices_context_blog_id();
 		$raw     = get_blog_option( $blog_id, self::OPTION, array() );
 		return self::normalize( is_array( $raw ) ? $raw : array() );
 	}

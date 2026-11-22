@@ -34,7 +34,7 @@ trait Office_Context {
 	 * otherwise an empty profile.
 	 */
 	protected function context_profile( array $settings ) {
-		if ( ! is_main_site() ) {
+		if ( fortify_offices_context_blog_id() !== get_main_site_id() ) {
 			return \FortifyOffices\Profile::get();
 		}
 		if ( Elementor_Integration::is_editing() ) {

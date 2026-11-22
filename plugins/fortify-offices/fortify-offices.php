@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Fortify Offices
  * Description:       Office registry for the Fortify demo network: one record per market office on the main site, read by every site, plus an Office Profile (team, reviews, market intro) on each office site. Provides the location finder, ZIP routing and registry widgets for Elementor.
- * Version:           0.2.0
+ * Version:           0.2.1
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Network:           true
@@ -14,7 +14,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'FORTIFY_OFFICES_VERSION', '0.2.0' );
+define( 'FORTIFY_OFFICES_VERSION', '0.2.1' );
 define( 'FORTIFY_OFFICES_FILE', __FILE__ );
 define( 'FORTIFY_OFFICES_DIR', __DIR__ );
 

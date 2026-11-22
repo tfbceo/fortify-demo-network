@@ -82,22 +82,36 @@ add_shortcode(
 );
 
 /**
- * On office sites, links to the home page ("/" and "/#start", in the shared
- * header and copied sections) point at the office's own home instead of the
- * corporate one. Other root-relative links (/plans/, /faqs/, /preview/ …)
- * stay on the corporate site: Sitelets 1.1.3's fallback that should serve
- * corporate pages at the same path on an office site renders "not found"
- * (BUILD-SPEC section 11). Widen this once that is fixed.
+ * On office sites, keep visitors on the office's site: root-relative links and
+ * form actions ("/", "/#start", "/plans/", "/preview/" …) point at the office's
+ * own path instead of the corporate root. Sitelets (1.1.4+) serves the
+ * corporate page at the same path on the office site when the office has no
+ * page of that slug.
  */
+function fortify_child_office_links( $html, $home ) {
+	if ( false === strpos( $html, '="/' ) ) {
+		return $html;
+	}
+	return preg_replace( '#\b(href|action)="/(?!/)#', '$1="' . esc_url( trailingslashit( $home ) ), $html );
+}
+
+// Office pages and the shared header and footer.
 add_filter(
 	'elementor/widget/render_content',
 	static function ( $content ) {
-		if ( is_main_site() || false === strpos( $content, 'href="/' ) ) {
-			return $content;
-		}
-		$home = trailingslashit( home_url( '/' ) );
-		return preg_replace( '#\bhref="/(?=["\#])#', 'href="' . esc_url( $home ), $content );
+		return is_main_site() ? $content : fortify_child_office_links( $content, home_url( '/' ) );
 	}
+);
+
+// Corporate pages served on an office site by the Sitelets fallback: they
+// render on the main site, so the filter above does not apply to them.
+add_filter(
+	'sitelets_fallback_content',
+	static function ( $html, $page, $origin_blog_id ) {
+		return fortify_child_office_links( $html, get_home_url( $origin_blog_id, '/' ) );
+	},
+	10,
+	3
 );
 
 /** Favicon from the theme on every site that has no Site Icon of its own. */

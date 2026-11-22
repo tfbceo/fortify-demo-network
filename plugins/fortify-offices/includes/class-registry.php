@@ -1,7 +1,7 @@
 <?php
 /**
  * The office registry: an `office` post type on the main site, its fields,
- * and a network-wide cached read of all records that any site can use.
+ * and a read of all records that any site can use.
  */
 
 namespace FortifyOffices;
@@ -76,8 +76,12 @@ class Registry {
 		) );
 	}
 
+	/** Records read in this request (null until first read). */
+	private static $records = null;
+
 	public static function flush() {
-		delete_site_transient( self::CACHE_KEY );
+		self::$records = null;
+		delete_site_transient( self::CACHE_KEY ); // Cache used by 0.2.0 and earlier.
 	}
 
 	/** Split a list typed as lines or commas into clean values. */
@@ -90,12 +94,13 @@ class Registry {
 
 	/**
 	 * Every office record (hidden ones included), sorted by state then name.
-	 * Read from the main site and cached network-wide.
+	 * Read from the main site once per request. (A network-wide transient was
+	 * used before 0.2.1; it could keep a stale site ID after an office site
+	 * was created, so it was dropped: twelve records are cheap to read.)
 	 */
 	public static function all() {
-		$cached = get_site_transient( self::CACHE_KEY );
-		if ( is_array( $cached ) ) {
-			return $cached;
+		if ( is_array( self::$records ) ) {
+			return self::$records;
 		}
 
 		$switched = ! is_main_site();
@@ -127,7 +132,7 @@ class Registry {
 			return $sa === $sb ? strcasecmp( $a['name'], $b['name'] ) : $sa - $sb;
 		} );
 
-		set_site_transient( self::CACHE_KEY, $offices, DAY_IN_SECONDS );
+		self::$records = $offices;
 		return $offices;
 	}
 

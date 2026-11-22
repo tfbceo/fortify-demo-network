@@ -33,9 +33,18 @@ function fortify_office( $slug_or_id ) {
 	return null;
 }
 
-/** The office whose site is $blog_id (default: the current site), or null on the corporate site. */
+/**
+ * The site whose office data widgets should show: the current site, or, while
+ * Sitelets renders a corporate page for an office site (its 404 fallback,
+ * 1.1.4+), that office site.
+ */
+function fortify_offices_context_blog_id() {
+	return isset( $GLOBALS['sitelets_fallback_origin_blog_id'] ) ? (int) $GLOBALS['sitelets_fallback_origin_blog_id'] : get_current_blog_id();
+}
+
+/** The office whose site is $blog_id (default: the context site), or null on the corporate site. */
 function fortify_office_for_site( $blog_id = null ) {
-	$blog_id = $blog_id ? (int) $blog_id : get_current_blog_id();
+	$blog_id = $blog_id ? (int) $blog_id : fortify_offices_context_blog_id();
 	foreach ( Registry::all() as $o ) {
 		if ( $o['blog_id'] && $o['blog_id'] === $blog_id && 'hidden' !== $o['status'] ) {
 			return $o;

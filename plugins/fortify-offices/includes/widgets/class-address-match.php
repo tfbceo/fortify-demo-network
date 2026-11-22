@@ -116,7 +116,7 @@ class Address_Match extends Widget_Base {
 			$text  = $s['no_zip'];
 			$url   = add_query_arg( 'q', rawurlencode( $address ), $s['finder_url'] );
 			$label = $s['finder_button'];
-		} elseif ( $office && $office['blog_id'] && get_current_blog_id() === $office['blog_id'] ) {
+		} elseif ( $office && $office['blog_id'] && fortify_offices_context_blog_id() === $office['blog_id'] ) {
 			$state = 'here';
 			$text  = $s['here'];
 			$url   = '';
