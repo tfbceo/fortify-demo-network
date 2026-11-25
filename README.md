@@ -25,7 +25,7 @@ scripts/build-pages.php phase 3: corporate inner pages, legal pages, /preview/ s
 scripts/lib/            element helpers shared by the build scripts
 scripts/seed-offices.php phase 4: seed the twelve office records
 scripts/build-office-templates.php  phase 5: the six office Sitelet Pages, with the lock map
-scripts/create-offices.php  phase 6: create office sites from the registry (one slug, several, or --all)
+scripts/create-offices.php  phase 6: create office sites from the registry (one slug, several, or all)
 scripts/tools/build-zip-map.py  regenerate office-zips.json from the Census ZIP-to-county file
 ```
 
@@ -71,7 +71,7 @@ Tested against: WordPress 7.1.5, PHP 8.5, Elementor 4.4.1, Elementor Pro 4.4.0, 
    wp eval-file <repo>/scripts/build-office-templates.php
    ```
    The home page becomes the static front page, the header and footer apply to the entire site, the inner pages, legal pages, `/locations/` finder and `/preview/` stub are created at the live site's slugs.
-10. **Create the offices** (phase 6): `wp eval-file <repo>/scripts/create-offices.php --all`, then set each `{slug}-editor` password in Network Admin → Users.
+10. **Create the offices** (phase 6): `wp eval-file <repo>/scripts/create-offices.php all` (not `--all`: WP-CLI rejects it as an unknown flag), then set each `{slug}-editor` password in Network Admin → Users.
 11. **Continue with the build phases** in `docs/BUILD-SPEC.md` section 10. Phase 1's gating checks have been passed on Sitelets 1.1.3 and do not need repeating on a rebuild.
 
 ## Working rules

@@ -4,7 +4,10 @@
  *
  *   wp eval-file scripts/create-offices.php tampa            (one office)
  *   wp eval-file scripts/create-offices.php st-petersburg orlando …
- *   wp eval-file scripts/create-offices.php --all             (every office without a site)
+ *   wp eval-file scripts/create-offices.php all               (every office without a site)
+ *
+ * (WP-CLI rejects `--all` as an unknown flag before the script runs, so the
+ * keyword is `all`; `--all` is still accepted when run some other way.)
  *
  * For each office: creates the site at /{slug}/ (Sitelets' new-site sync
  * copies the Sitelet Pages, Theme Builder templates and kit, and sets the
@@ -28,11 +31,11 @@ foreach ( array( '\SiteletsWP\Sitelets_Sync', '\FortifyOffices\Registry', '\Fort
 }
 
 $slugs = isset( $args ) ? (array) $args : array();
-if ( in_array( '--all', $slugs, true ) ) {
+if ( array_intersect( array( 'all', '--all' ), $slugs ) ) {
 	$slugs = wp_list_pluck( fortify_offices( array( 'status' => array( 'live', 'coming_soon', 'hidden' ) ) ), 'slug' );
 }
 if ( ! $slugs ) {
-	WP_CLI::error( 'Name the offices to create (slugs), or pass --all.' );
+	WP_CLI::error( 'Name the offices to create (slugs), or pass all.' );
 }
 
 $network = get_network();
