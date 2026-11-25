@@ -25,6 +25,10 @@ class Seo {
 	/** Templates by page slug. `default` covers any other office page. */
 	public static function templates() {
 		$t = array(
+			'opening-soon' => array(
+				'title'       => 'Opening Soon in {city}, {state}',
+				'description' => 'Fortify Listings is opening an office in {city}: flat fee MLS listings with a local broker for home sellers in {counties}, {state_name}. Register your interest.',
+			),
 			'office'       => array(
 				'title'       => 'Flat Fee MLS Listings in {city}, {state}',
 				'description' => 'Sell your {city} home for a flat fee with {office}. Broker-reviewed listings on {mls} for sellers in {counties}, {state_name}.',
@@ -63,7 +67,12 @@ class Seo {
 			return null;
 		}
 		$o = fortify_office_for_site();
-		if ( ! $o || 'live' !== $o['status'] ) {
+		if ( ! $o || ! in_array( $o['status'], array( 'live', 'coming_soon' ), true ) ) {
+			return null;
+		}
+		// A coming-soon office only shows its opening-soon home (Opening_Soon).
+		$soon = 'coming_soon' === $o['status'];
+		if ( $soon && ! is_front_page() ) {
 			return null;
 		}
 
@@ -73,7 +82,7 @@ class Seo {
 		}
 
 		$templates = self::templates();
-		$slug      = is_front_page() ? 'office' : $post->post_name;
+		$slug      = is_front_page() ? ( $soon ? 'opening-soon' : 'office' ) : $post->post_name;
 		$template  = $templates[ $slug ] ?? $templates['default'];
 
 		return array( $o, $template, $post ? get_the_title( $post ) : '' );
