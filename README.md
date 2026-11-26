@@ -80,4 +80,5 @@ Tested against: WordPress 7.1.5, PHP 8.5, Elementor 4.4.1, Elementor Pro 4.4.0, 
 
 - Every throwaway subsite counts against the Sitelets license until it is deleted. After deleting one, drop its leftover `wp_N_e_*` tables and `uploads/sites/N`, and open the license screen so the count is cleaned up.
 - The network is no-index in every environment. Remove `fortify-noindex.php` only for a real production launch.
+- Automatic updates are off: `define( 'AUTOMATIC_UPDATER_DISABLED', true );` in `wp-config.php`, and no plugin has auto-updates enabled (Network Admin → Plugins). Update Elementor, Elementor Pro, WordPress and Sitelets on purpose only, then re-run the plugin's TESTING.md §3a and §3b. If an update is interrupted, delete the leftover `.maintenance` file in the WordPress root; while it exists every user sees "An automated WordPress update has failed to complete".
 - No analytics (Tag Manager, Clarity, Meta Pixel) and no Google Maps or Places keys. See BUILD-SPEC.
