@@ -4,9 +4,11 @@
  * `fortify_office_profile` option): market intro, team members and local
  * reviews. Edited on the sitelet's "Office Profile" screen by its local
  * editors (capability `edit_pages` by default); not available on site 1.
- * Team photos are stored as URLs: office sites pick images from the main
- * site's media library (Sitelets blocks uploads there), so attachment IDs
- * would not resolve on the office site.
+ * Team photos are stored as URLs, not attachment IDs. The picker uses the
+ * office site's own media library: uploads land there (uploads/sites/N/) and
+ * the office manages only its own files; Sitelets' read-only "Sitelet Media"
+ * view of shared main-site images may also offer images whose IDs would not
+ * resolve on the office site, which is why URLs are stored.
  */
 
 namespace FortifyOffices;
